@@ -1,0 +1,39 @@
+<group name="veriguard_autonomous_edr,">
+  <rule id="100500" level="7">
+    <if_sid>550, 554</if_sid>
+    <field name="file" type="pcre2">^/tmp/monitored_dropzone/</field>
+    <description>VeriGuard FIM Trigger: File event in monitored dropzone ($(file))</description>
+    <mitre>
+      <id>T1105</id>
+    </mitre>
+  </rule>
+
+  <rule id="100501" level="3">
+    <decoded_as>veriguard_decoder</decoded_as>
+    <description>VeriGuard Active Response telemetry event</description>
+  </rule>
+
+  <rule id="100502" level="12">
+    <if_sid>100501</if_sid>
+    <field name="vg_action">QUARANTINED</field>
+    <description>CONTAINED [File]: $(vg_target) quarantined ($(vg_verdict), $(vg_latency_ms)ms, hash=$(vg_chain_hash))</description>
+    <mitre>
+      <id>T1204</id>
+    </mitre>
+  </rule>
+
+  <rule id="100503" level="12">
+    <if_sid>100501</if_sid>
+    <field name="vg_action">IP_BLOCKED</field>
+    <description>CONTAINED [Network]: Hostile IP $(vg_target) isolated via iptables ($(vg_latency_ms)ms)</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+  <rule id="100504" level="4">
+    <if_sid>100501</if_sid>
+    <field name="vg_action">ALLOWED</field>
+    <description>VERIFIED CLEAN: $(vg_target) cleared inspection in$(vg_latency_ms)ms</description>
+  </rule>
+</group>

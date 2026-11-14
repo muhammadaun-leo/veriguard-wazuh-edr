@@ -1,0 +1,9 @@
+<decoder name="veriguard_decoder">
+  <program_name>^veriguard-ar$</program_name>
+</decoder>
+
+<decoder name="veriguard_fields">
+  <parent>veriguard_decoder</parent>
+  <regex type="pcre2">stage=(\S+)\s+verdict=(\S+)\s+action=(\S+)\s+target=(\S+)\s+latency_ms=([\d.]+)\s+chain_hash=(\S+)</regex>
+  <order>vg_stage, vg_verdict, vg_action, vg_target, vg_latency_ms, vg_chain_hash</order>
+</decoder>

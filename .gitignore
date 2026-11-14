@@ -1,0 +1,3 @@
+config/vt_config.env
+__pycache__/
+*.pyc
