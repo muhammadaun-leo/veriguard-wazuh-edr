@@ -40,10 +40,11 @@ Traditional host-based intrusion detection often stops at alerting, leaving anal
 
 ```text
 veriguard-wazuh-edr/
-├── active-response/       # Custom Python scripts for automated quarantine & remediation
-├── rules/                 # Custom Wazuh XML detection rules and alert thresholds
-├── yara/                  # Custom YARA rulesets for local artifact scanning
-├── config/                # Sample ossec.conf snippets for FIM and active-response blocks
+├── config/       # Wazuh ossec.conf snippets for FIM and active-response blocks
+├── docs/         # Architecture notes, setup guides, and validation documentation
+├── rules/        # Custom Wazuh XML detection rules and YARA signatures
+├── scripts/      # Custom Python active response and quarantine automation scripts
+├── deploy.sh     # Automated deployment script for configuring rules and scripts
 └── README.md
 ```
 
@@ -53,30 +54,22 @@ veriguard-wazuh-edr/
 - **SIEM:** Wazuh Manager & Agent (v4.x+)
 - **Runtime:** Python 3.10+ (`requests`, `yara-python`)
 - **API Access:** VirusTotal API Key
-
+  
 ## Setup & Deployment
 
-1. **Install Python dependencies on the endpoint:**
+1. **Clone the repository and install Python dependencies:**
    ```bash
+   git clone https://github.com/muhammadaun-leo/veriguard-wazuh-edr.git
+   cd veriguard-wazuh-edr
    pip3 install requests yara-python
    ```
 
-2. **Deploy Active Response scripts:**
-   Copy the Python response scripts to the Wazuh active-response binary directory and set appropriate ownership and permissions:
+2. **Run the automated deployment script (or deploy manually):**
    ```bash
-   sudo cp active-response/*.py /var/ossec/active-response/bin/
-   sudo chown root:wazuh /var/ossec/active-response/bin/*.py
-   sudo chmod 750 /var/ossec/active-response/bin/*.py
+   chmod +x deploy.sh
+   sudo ./deploy.sh
    ```
-
-3. **Configure YARA rules & custom Wazuh rules:**
-   Place your YARA signatures in `/var/ossec/ruleset/yara/` and append the custom XML rules from `rules/` into `/var/ossec/etc/rules/local_rules.xml`.
-
-4. **Enable FIM & Active Response in `ossec.conf`:**
-   Configure `<syscheck>` for real-time directory monitoring and link the custom `<command>` and `<active-response>` blocks in `/var/ossec/etc/ossec.conf`, then restart the manager:
-   ```bash
-   sudo systemctl restart wazuh-manager
-   ```
+   *(If deploying manually, copy the Python scripts from `scripts/` to `/var/ossec/active-response/bin/`, place your custom XML and YARA rules from `rules/` into `/var/ossec/etc/rules/` and `/var/ossec/ruleset/yara/`, update `/var/ossec/etc/ossec.conf` using `config/`, and run `sudo systemctl restart wazuh-manager`.)*
 
 ## Validation & Proof of Concept
 
