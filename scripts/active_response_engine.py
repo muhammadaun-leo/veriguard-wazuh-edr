@@ -78,7 +78,7 @@ def query_virustotal(file_hash: str) -> tuple[int, str, float]:
     if file_hash in cache:
         return cache[file_hash], "cache_hit", (time.perf_counter() - t0) * 1000.0
 
-    if not VT_API_KEY or VT_API_KEY == "YOUR_VT_API_KEY":
+    if not VT_API_KEY or VT_API_KEY in ("YOUR_VT_API_KEY", "YOUR_VIRUSTOTAL_V3_API_KEY"):
         return 0, "local_only_mode", (time.perf_counter() - t0) * 1000.0
 
     try:
